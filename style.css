@@ -496,191 +496,320 @@ body {
     max-width: 600px;
 }
 
+/* Services Grid */
 .services-grid {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-bottom: 3rem;
+}
+
+.service-tile {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.service-tile::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+    pointer-events: none;
+}
+
+.service-tile:hover::after {
+    border-color: #1f1914;
+}
+
+.service-tile:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.service-tile-image {
+    width: 100%;
+    height: 220px;
     overflow: hidden;
     position: relative;
 }
 
-.services-grid .service-card {
-    flex: 0 0 calc(33.333% - 1.33rem);
-    min-width: 280px;
-}
-
-.service-card {
-    background-color: transparent;
-    padding: 0;
-    border-radius: 0;
-    text-align: left;
-    transition: all 0.3s ease;
-}
-
-.service-card:hover {
-    transform: translateY(-5px);
-}
-
-.service-image {
+.service-tile-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 320px;
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-    border-radius: 8px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 50%, rgba(31, 25, 20, 0.7));
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.service-image img {
+.service-tile:hover .service-tile-image::after {
+    opacity: 1;
+}
+
+.service-tile-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
-.service-card:hover .service-image img {
-    transform: scale(1.05);
+.service-tile:hover .service-tile-image img {
+    transform: scale(1.1);
 }
 
-.service-card h3 {
-    font-size: 1.5rem;
+.service-tile-content {
+    padding: 1.5rem;
+    background-color: #ffffff;
+}
+
+.service-tile-content h3 {
+    font-size: 1.3rem;
+    color: #1f1914;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.service-tile:hover .service-tile-content h3 {
+    color: #2a2018;
+}
+
+.service-tile-content p {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Responsive adjustments for services grid */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .service-tile-image {
+        height: 180px;
+    }
+}
+
+/* Service Modal */
+.service-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.service-modal.show {
+    opacity: 1;
+}
+
+.service-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(31, 25, 20, 0.92);
+    backdrop-filter: blur(8px);
+}
+
+.service-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 85vh;
+    margin: 7.5vh auto;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transform: scale(0.8) translateY(50px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.service-modal.show .service-modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.service-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 50%;
+    color: #1f1914;
+    font-size: 1.3rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.service-modal-close:hover {
+    background-color: #1f1914;
+    color: #ffffff;
+    transform: rotate(90deg);
+}
+
+.service-modal-inner {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    max-height: 85vh;
+    overflow: hidden;
+}
+
+.service-modal-image {
+    position: relative;
+    background-color: #f8f8f8;
+    overflow: hidden;
+}
+
+.service-modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-modal-body {
+    padding: 3rem;
+    overflow-y: auto;
+    max-height: 85vh;
+}
+
+.service-modal-body h2 {
+    font-size: 2.2rem;
+    color: #1f1914;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.service-modal-body #serviceModalDescription {
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.service-modal-body #serviceModalDescription p {
+    margin-bottom: 1rem;
+}
+
+.service-modal-features {
+    background-color: #f8f8f8;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+.service-modal-features h3 {
+    font-size: 1.3rem;
     color: #1f1914;
     margin-bottom: 1rem;
     font-weight: 600;
 }
 
-.service-card p {
+.service-modal-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.service-modal-features li {
+    padding: 0.75rem 0;
+    padding-left: 2rem;
     color: #555;
-    line-height: 1.6;
-    font-size: 0.95rem;
-}
-
-/* Services Carousel */
-.services-carousel-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin-bottom: 3rem;
+    font-size: 1rem;
     position: relative;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.services-grid {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
+.service-modal-features li:last-child {
+    border-bottom: none;
 }
 
-.services-carousel-track {
-    display: flex;
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    gap: 2rem;
-    width: fit-content;
-}
-
-.service-card {
-    flex: 0 0 auto;
-    box-sizing: border-box;
-}
-
-/* Mobile: Show 1 card */
-@media (max-width: 768px) {
-    .services-container {
-        padding: 0 15px;
-    }
-    
-    .service-card {
-        width: calc(100vw - 30px); /* Full width minus container padding */
-        max-width: none;
-        min-width: 280px;
-    }
-    
-    .services-carousel-wrapper {
-        gap: 0; /* Remove gap since arrows are hidden */
-        margin-bottom: 2rem;
-        position: relative;
-        justify-content: center; /* Center the carousel */
-    }
-    
-    .services-carousel-track {
-        gap: 1rem;
-    }
-    
-    .carousel-arrow.carousel-prev,
-    .carousel-arrow.carousel-next {
-        display: none !important; /* Hide arrows on mobile */
-    }
-    
-    .services-grid {
-        overflow: hidden;
-        margin: 0;
-        width: 100%;
-        touch-action: pan-y; /* Allow vertical scrolling but enable horizontal touch handling */
-    }
-    
-    .services-carousel-track {
-        cursor: grab;
-    }
-    
-    .services-carousel-track:active {
-        cursor: grabbing;
-    }
-}
-
-/* Tablet: Show 2 cards */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .service-card {
-        width: calc((100vw - 220px) / 2 - 1rem);
-        max-width: 400px;
-        min-width: 280px;
-    }
-}
-
-/* Desktop: Show 3 cards */
-@media (min-width: 1025px) {
-    .service-card {
-        width: calc((100vw - 200px) / 3 - 2rem);
-        max-width: 350px;
-        min-width: 280px;
-    }
-}
-
-/* Large desktop: Fixed container width */
-@media (min-width: 1200px) {
-    .service-card {
-        width: calc((1200px - 120px) / 3 - 1.33rem);
-    }
-}
-
-.carousel-arrow {
-    background: #ffffff;
-    border: 2px solid #1f1914;
+.service-modal-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
     color: #1f1914;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: bold;
     font-size: 1.2rem;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 15px rgba(31, 25, 20, 0.1);
-    flex-shrink: 0;
 }
 
-.carousel-arrow:hover {
-    background: #1f1914;
-    color: #ffffff;
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(31, 25, 20, 0.2);
+.service-modal-actions {
+    display: flex;
+    gap: 1rem;
 }
 
-.carousel-arrow:active {
-    transform: scale(0.95);
+.service-modal-actions .btn {
+    flex: 1;
 }
 
-.carousel-arrow.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    pointer-events: none;
+/* Responsive Modal */
+@media (max-width: 768px) {
+    .service-modal-content {
+        width: 95%;
+        max-height: 90vh;
+        margin: 5vh auto;
+    }
+
+    .service-modal-inner {
+        grid-template-columns: 1fr;
+    }
+
+    .service-modal-image {
+        height: 250px;
+    }
+
+    .service-modal-body {
+        padding: 2rem 1.5rem;
+        max-height: calc(90vh - 250px);
+    }
+
+    .service-modal-body h2 {
+        font-size: 1.8rem;
+    }
+
+    .service-modal-features {
+        padding: 1.5rem;
+    }
+
+    .service-modal-close {
+        top: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
 }
 
 .services-buttons {
@@ -1208,20 +1337,6 @@ body {
     .contact-content {
         grid-template-columns: 1fr;
         gap: 2rem;
-    }
-
-    .services-grid {
-        flex-direction: column;
-    }
-    
-    .services-grid .service-card {
-        flex: none;
-        min-width: auto;
-    }
-    
-    .service-card.hidden-card {
-        opacity: 1;
-        transform: translateX(0);
     }
 
     .services-header {

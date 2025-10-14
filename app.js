@@ -579,201 +579,203 @@ const throttledScroll = throttle(function() {
 
 window.addEventListener('scroll', throttledScroll);
 
-// Services Carousel functionality
+// Service Modal functionality
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        const carouselTrack = document.querySelector('.services-carousel-track');
-        const carouselPrev = document.querySelector('.carousel-prev');
-        const carouselNext = document.querySelector('.carousel-next');
-        const serviceCards = document.querySelectorAll('.service-card');
-        
-        console.log('Carousel elements:', { 
-            carouselTrack, 
-            carouselPrev, 
-            carouselNext, 
-            serviceCards: serviceCards.length 
-        });
-        
-        if (!carouselTrack || !carouselPrev || !carouselNext || serviceCards.length === 0) {
-            console.log('Carousel elements not found');
-            return;
+    const serviceData = {
+        kitchen: {
+            title: 'Konyhaszekrények',
+            image: 'assets/services_kitchen.jpg',
+            description: `
+                <p>Egyedi, modern konyhabútorokat tervezünk és gyártunk, amelyek tökéletesen illeszkednek az Ön igényeihez és a konyha adottságaihoz. Minden konyhaszekrényünk prémium minőségű anyagokból készül, figyelembe véve a funkcionalitást és az esztétikát.</p>
+                <p>A tervezés során kiemelt figyelmet fordítunk a maximális helykihasználásra, a praktikus tárolási megoldásokra és a tartósságra. Választhat különböző ajtólapok, munkalapok és kiegészítők közül.</p>
+            `,
+            features: [
+                'Egyedi tervezés és méretezés',
+                'Prémium minőségű anyagok (MDF, tömör fa, laminált lap)',
+                'Modern vasalatok és soft-close rendszerek',
+                'Beépített spotlámpák és LED világítás',
+                'Munkalap tervezés és beépítés',
+                'Gépek beépítése (sütő, hűtő, mosogatógép)',
+                'Teljes körű garancia'
+            ]
+        },
+        wardrobe: {
+            title: 'Gardróbok, előszoba szekrények',
+            image: 'assets/services_wardrobe.jpg',
+            description: `
+                <p>Praktikus és stílusos gardróbokat, beépített szekrényeket és előszoba bútorokat készítünk, amelyek maximálisan kihasználják a rendelkezésre álló teret. Minden gardróbunk egyedi tervezésű, figyelembe véve az Ön igényeit és a helyiség adottságait.</p>
+                <p>Tárolási megoldásaink között szerepelnek ruhatartó rudak, polcok, fiókok, cipőtartók és egyéb praktikus kiegészítők.</p>
+            `,
+            features: [
+                'Beépített és szabadon álló gardróbok',
+                'Tolóajtós és nyíló ajtós megoldások',
+                'Belső elosztás tervezése (polcok, fiókok, rudak)',
+                'Tükrös ajtólapok',
+                'Előszoba szekrények cipőtartóval',
+                'LED világítás és szenzoros kapcsolók',
+                'Minőségi vasalatok és sínek'
+            ]
+        },
+        bathroom: {
+            title: 'Fürdőszobabútorok',
+            image: 'assets/services_bathroom_cabinets.jpg',
+            description: `
+                <p>Vízálló, tartós fürdőszobabútorokat készítünk, amelyek egyszerre funkcionálisak és esztétikusak. Fürdőszobai megoldásaink tökéletesen ellenállnak a magas páratartalomnak és a nedvességnek.</p>
+                <p>Komplett fürdőszoba berendezéseket tervezünk, beleértve a mosdószekrényeket, tükrös faliszekrényeket, polcrendszereket és egyéb tárolási megoldásokat.</p>
+            `,
+            features: [
+                'Vízálló, nedvességálló anyagok',
+                'Mosdó alatti szekrények',
+                'Tükrös fürdőszoba szekrények',
+                'Beépített vagy szabadon álló megoldások',
+                'Rejtett világítás',
+                'Modern, könnyen tisztítható felületek',
+                'Egyedi méretezés és tervezés'
+            ]
+        },
+        doors: {
+            title: 'Beltéri ajtók',
+            image: 'assets/unsorted/IMG_0809.jpg',
+            description: `
+                <p>Egyedi beltéri ajtókat tervezünk és gyártunk, amelyek harmonizálnak otthona stílusával. Széles választék áll rendelkezésre: modern, klasszikus, minimalista vagy rusztikus kivitelben.</p>
+                <p>Ajtóink készülhetnek tömör fából, furnérozott MDF-ből vagy laminált anyagokból, mindig a legmagasabb minőségi követelményeknek megfelelően.</p>
+            `,
+            features: [
+                'Egyedi méretű ajtók gyártása',
+                'Különböző anyagok (tömör fa, MDF, CPL)',
+                'Üvegbetétes változatok',
+                'Tokkal együtt szállítva',
+                'Minőségi zárszerkezetek',
+                'Színre fényezés vagy lakkozás',
+                'Szakszerű beszerelés'
+            ]
+        },
+        interior: {
+            title: 'Belsőépítészeti kivitelezések',
+            image: 'assets/unsorted/IMG_2270.jpg',
+            description: `
+                <p>Komplex belsőépítészeti projekteket valósítunk meg, az ötlettől a befejezésig. Lakások, házak, irodák és üzlethelyiségek teljes felújítását és átalakítását vállaljuk.</p>
+                <p>Csapatunk magában foglalja a tervezőket, asztalosokat, villanyszerelőket és egyéb szakembereket, így minden munkát egy kézből kaphat.</p>
+            `,
+            features: [
+                'Komplett lakásfelújítás és átalakítás',
+                'Falak áthelyezése, új elrendezések',
+                'Gipszkarton munkák',
+                'Villanyszerelés és világítástervezés',
+                'Festés, tapétázás',
+                'Parketta és burkolat lerakás',
+                'Projektmenedzsment egy kézből'
+            ]
+        },
+        '3d': {
+            title: '3D látványterv kivitelezés',
+            image: 'assets/unsorted/IMG_5730.jpg',
+            description: `
+                <p>Fotorealisztikus 3D látványterveket készítünk, amelyek segítségével még a kivitelezés előtt láthatja, milyen lesz otthona vagy irodája. A terveinket a legmodernebb szoftverekkel készítjük.</p>
+                <p>A 3D tervek segítenek a döntéshozatalban: megtekintheti a különböző színeket, anyagokat, elrendezéseket, mielőtt még bármit is elkezdene.</p>
+            `,
+            features: [
+                'Fotorealisztikus 3D vizualizáció',
+                'Teljes helyiségek megtervezése',
+                'Különböző variációk bemutatása',
+                'Anyagok, színek, világítás kipróbálása',
+                'Bútorrajzok és alaprajzok',
+                'Virtual reality (VR) bemutató lehetőség',
+                'A kivitelezés pontos előkészítése'
+            ]
+        },
+        microcement: {
+            title: 'Mikrocement',
+            image: 'assets/unsorted/IMG_7328.jpg',
+            description: `
+                <p>A mikrocement egy modern, varrat nélküli bevonat, amely egyedülálló megjelenést kölcsönöz otthonának. Falakra, padlókra, fürdőszobákba, konyhákba egyaránt alkalmazható.</p>
+                <p>Vízálló, tartós és könnyen tisztítható felületet biztosít. A mikrocement kiválóan alkalmas modern, indusztriális vagy minimalista stílusú terekhez.</p>
+            `,
+            features: [
+                'Varrat nélküli, modern megjelenés',
+                'Falakra és padlókra egyaránt',
+                'Vízálló, fürdőszobába is alkalmas',
+                'Különböző színek és textúrák',
+                'Tartós és könnyen tisztítható',
+                'Meglévő burkolatra is felvihető',
+                'Egyedi, modern design'
+            ]
         }
-        
-        let currentIndex = 0;
-        const totalCards = serviceCards.length;
-        let isAnimating = false;
-        
-        // Get number of cards to show based on screen size
-        function getCardsToShow() {
-            const width = window.innerWidth;
-            if (width <= 768) return 1;        // Mobile: 1 card
-            if (width <= 1024) return 2;       // Tablet: 2 cards
-            return 3;                          // Desktop: 3 cards
-        }
-        
-        // Calculate the distance to move for one card shift
-        function getShiftDistance() {
-            const firstCard = serviceCards[0];
-            if (!firstCard) return 0;
-            
-            const cardWidth = firstCard.offsetWidth;
-            const width = window.innerWidth;
-            const gap = width <= 768 ? 16 : 32; // Smaller gap on mobile
-            return cardWidth + gap;
-        }
-        
-        function updateCarousel(animate = true) {
-            if (isAnimating) return;
-            
-            console.log('Updating carousel, current index:', currentIndex);
-            
-            if (animate) {
-                isAnimating = true;
-            }
-            
-            const shiftDistance = getShiftDistance();
-            const translateX = -currentIndex * shiftDistance;
-            
-            console.log('Card shift distance:', shiftDistance, 'Total translate:', translateX);
-            
-            carouselTrack.style.transform = `translateX(${translateX}px)`;
-            
-            if (animate) {
+    };
+
+    const modal = document.getElementById('serviceModal');
+    const modalOverlay = modal.querySelector('.service-modal-overlay');
+    const modalClose = modal.querySelector('.service-modal-close');
+    const serviceTiles = document.querySelectorAll('.service-tile');
+
+    // Open modal
+    serviceTiles.forEach(tile => {
+        tile.addEventListener('click', function() {
+            const serviceId = this.getAttribute('data-service');
+            const service = serviceData[serviceId];
+
+            if (service) {
+                // Populate modal content
+                document.getElementById('serviceModalTitle').textContent = service.title;
+                document.getElementById('serviceModalImg').src = service.image;
+                document.getElementById('serviceModalImg').alt = service.title;
+                document.getElementById('serviceModalDescription').innerHTML = service.description;
+
+                // Populate features
+                const featuresList = document.getElementById('serviceModalFeatures');
+                featuresList.innerHTML = '';
+                service.features.forEach(feature => {
+                    const li = document.createElement('li');
+                    li.textContent = feature;
+                    featuresList.appendChild(li);
+                });
+
+                // Show modal with animation
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
                 setTimeout(() => {
-                    isAnimating = false;
-                }, 600); // Match CSS transition duration
-            }
-        }
-        
-        function nextCards() {
-            if (isAnimating) return;
-            
-            console.log('Next button clicked, current index:', currentIndex);
-            
-            const cardsToShow = getCardsToShow();
-            // Calculate max index (we can shift until only the required number of cards remain visible)
-            const maxIndex = totalCards - cardsToShow;
-            
-            if (currentIndex >= maxIndex) {
-                // We're at the end, wrap to beginning
-                currentIndex = 0;
-            } else {
-                // Move to next card
-                currentIndex++;
-            }
-            
-            updateCarousel(true);
-        }
-        
-        function prevCards() {
-            if (isAnimating) return;
-            
-            console.log('Prev button clicked, current index:', currentIndex);
-            
-            const cardsToShow = getCardsToShow();
-            // Calculate max index for wrapping
-            const maxIndex = totalCards - cardsToShow;
-            
-            if (currentIndex <= 0) {
-                // We're at the beginning, wrap to end
-                currentIndex = maxIndex;
-            } else {
-                // Move to previous card
-                currentIndex--;
-            }
-            
-            updateCarousel(true);
-        }
-        
-        // Initialize carousel
-        updateCarousel(false);
-        
-        // Add click events to arrows (desktop only)
-        carouselPrev.addEventListener('click', function(e) {
-            e.preventDefault();
-            prevCards();
-        });
-        
-        carouselNext.addEventListener('click', function(e) {
-            e.preventDefault();
-            nextCards();
-        });
-        
-        // Touch/Swipe functionality for mobile
-        let startX = 0;
-        let startY = 0;
-        let isDragging = false;
-        let startTime = 0;
-        
-        function handleTouchStart(e) {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            isDragging = true;
-            startTime = Date.now();
-        }
-        
-        function handleTouchMove(e) {
-            if (!isDragging) return;
-            
-            // Prevent scrolling while swiping horizontally
-            const deltaX = Math.abs(e.touches[0].clientX - startX);
-            const deltaY = Math.abs(e.touches[0].clientY - startY);
-            
-            if (deltaX > deltaY) {
-                e.preventDefault();
-            }
-        }
-        
-        function handleTouchEnd(e) {
-            if (!isDragging) return;
-            isDragging = false;
-            
-            const endX = e.changedTouches[0].clientX;
-            const endY = e.changedTouches[0].clientY;
-            const deltaX = startX - endX;
-            const deltaY = Math.abs(startY - endY);
-            const deltaTime = Date.now() - startTime;
-            
-            // Only register swipe if horizontal movement is greater than vertical
-            // and the swipe is fast enough and long enough
-            if (Math.abs(deltaX) > deltaY && Math.abs(deltaX) > 50 && deltaTime < 300) {
-                if (deltaX > 0) {
-                    // Swiped left - go to next
-                    nextCards();
-                } else {
-                    // Swiped right - go to previous
-                    prevCards();
-                }
-            }
-        }
-        
-        // Add touch events to carousel track
-        carouselTrack.addEventListener('touchstart', handleTouchStart, { passive: true });
-        carouselTrack.addEventListener('touchmove', handleTouchMove, { passive: false });
-        carouselTrack.addEventListener('touchend', handleTouchEnd, { passive: true });
-        
-        // Keyboard support (desktop)
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') {
-                prevCards();
-            } else if (e.key === 'ArrowRight') {
-                nextCards();
+                    modal.classList.add('show');
+                }, 10);
             }
         });
-        
-        // Handle window resize
-        let resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                // Reset to start position on resize to avoid display issues
-                currentIndex = 0;
-                updateCarousel(false);
-                console.log('Carousel reset after resize, cards to show:', getCardsToShow());
-            }, 100);
-        });
-        
-        console.log('Infinite carousel initialized successfully');
-        
-    }, 100);
+    });
+
+    // Close modal function
+    function closeModal() {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }, 300);
+    }
+
+    // Close on X button
+    modalClose.addEventListener('click', closeModal);
+
+    // Close on overlay click
+    modalOverlay.addEventListener('click', closeModal);
+
+    // Close on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+
+    // Smooth scroll when clicking contact button in modal
+    modal.querySelector('.service-modal-actions a').addEventListener('click', function(e) {
+        e.preventDefault();
+        closeModal();
+        setTimeout(() => {
+            const contactSection = document.querySelector('#contact');
+            if (contactSection) {
+                const offsetTop = contactSection.offsetTop - 70;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        }, 400);
+    });
 });

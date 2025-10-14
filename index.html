@@ -106,47 +106,98 @@
                     igazán egyedi és praktikus legyen.
                 </p>
             </div>
-            <div class="services-carousel-wrapper">
-                <button class="carousel-arrow carousel-prev" aria-label="Előző">
-                    <i class="fas fa-chevron-left"></i>
+            <div class="services-grid">
+                <div class="service-tile" data-service="kitchen">
+                    <div class="service-tile-image">
+                        <img src="assets/services_kitchen.jpg" alt="Konyhaszekrények" />
+                    </div>
+                    <div class="service-tile-content">
+                        <h3>Konyhaszekrények</h3>
+                        <p>Modern, egyedi konyhabútorok tervezése és kivitelezése</p>
+                    </div>
+                </div>
+                <div class="service-tile" data-service="wardrobe">
+                    <div class="service-tile-image">
+                        <img src="assets/services_wardrobe.jpg" alt="Gardróbok" />
+                    </div>
+                    <div class="service-tile-content">
+                        <h3>Gardróbok, előszoba szekrények</h3>
+                        <p>Praktikus, személyre szabott tárolási megoldások</p>
+                    </div>
+                </div>
+                <div class="service-tile" data-service="bathroom">
+                    <div class="service-tile-image">
+                        <img src="assets/services_bathroom_cabinets.jpg" alt="Fürdőszobabútorok" />
+                    </div>
+                    <div class="service-tile-content">
+                        <h3>Fürdőszobabútorok</h3>
+                        <p>Stílusos és tartós megoldások minden igényre</p>
+                    </div>
+                </div>
+                <div class="service-tile" data-service="doors">
+                    <div class="service-tile-image">
+                        <img src="assets/unsorted/IMG_0809.jpg" alt="Beltéri ajtók" />
+                    </div>
+                    <div class="service-tile-content">
+                        <h3>Beltéri ajtók</h3>
+                        <p>Egyedi tervezésű, minőségi beltéri ajtók készítése</p>
+                    </div>
+                </div>
+                <div class="service-tile" data-service="interior">
+                    <div class="service-tile-image">
+                        <img src="assets/unsorted/IMG_2270.jpg" alt="Belsőépítészet" />
+                    </div>
+                    <div class="service-tile-content">
+                        <h3>Belsőépítészeti kivitelezések</h3>
+                        <p>Komplex belsőépítészeti projektek megvalósítása</p>
+                    </div>
+                </div>
+                <div class="service-tile" data-service="3d">
+                    <div class="service-tile-image">
+                        <img src="assets/unsorted/IMG_5730.jpg" alt="3D látványterv" />
+                    </div>
+                    <div class="service-tile-content">
+                        <h3>3D látványterv kivitelezés</h3>
+                        <p>Részletes vizualizáció a tervezéstől a megvalósításig</p>
+                    </div>
+                </div>
+                <div class="service-tile" data-service="microcement">
+                    <div class="service-tile-image">
+                        <img src="assets/unsorted/IMG_7328.jpg" alt="Mikrocement" />
+                    </div>
+                    <div class="service-tile-content">
+                        <h3>Mikrocement</h3>
+                        <p>Modern, varrat nélküli felületek egyedi megjelenéssel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Modal -->
+        <div id="serviceModal" class="service-modal">
+            <div class="service-modal-overlay"></div>
+            <div class="service-modal-content">
+                <button class="service-modal-close" aria-label="Bezárás">
+                    <i class="fas fa-times"></i>
                 </button>
-                <div class="services-grid">
-                    <div class="services-carousel-track">
-                        <div class="service-card">
-                            <div class="service-image">
-                                <img src="assets/services_kitchen.jpg" alt="Konyhaszekrények" />
-                            </div>
-                            <h3>Konyhaszekrények</h3>
-                            <p>Modern, egyedi konyhabútorok tervezése és kivitelezése, maximális helykihasználással és prémium anyagokból.</p>
+                <div class="service-modal-inner">
+                    <div class="service-modal-image">
+                        <img id="serviceModalImg" src="" alt="" />
+                    </div>
+                    <div class="service-modal-body">
+                        <h2 id="serviceModalTitle"></h2>
+                        <div id="serviceModalDescription"></div>
+                        <div class="service-modal-features">
+                            <h3>Szolgáltatás részletei:</h3>
+                            <ul id="serviceModalFeatures"></ul>
                         </div>
-                        <div class="service-card">
-                            <div class="service-image">
-                                <img src="assets/services_bathroom_cabinets.jpg" alt="Fürdőszobabútorok" />
-                            </div>
-                            <h3>Fürdőszobabútorok</h3>
-                            <p>Stílusos és tartós fürdőszobabútorok, melyek tökéletesen illeszkednek az Ön igényeihez és a tér adottságaihoz.</p>
-                        </div>
-                        <div class="service-card">
-                            <div class="service-image">
-                                <img src="assets/services_wardrobe.jpg" alt="Gardróbszekrények" />
-                            </div>
-                            <h3>Gardróbszekrények</h3>
-                            <p>Praktikus, személyre szabott gardróbszekrények, hogy minden ruhadarabnak és kiegészítőnek meglegyen a helye.</p>
-                        </div>
-                        <div class="service-card">
-                            <div class="service-image">
-                                <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400"
-                                    alt="Nappali bútorok" />
-                            </div>
-                            <h3>Nappali bútorok</h3>
-                            <p>Modern és funkcionális nappali bútorok, amelyek kényelmet és eleganciát visznek otthonába.</p>
+                        <div class="service-modal-actions">
+                            <a href="#contact" class="btn btn-primary">Kérek ajánlatot</a>
                         </div>
                     </div>
                 </div>
-                <button class="carousel-arrow carousel-next" aria-label="Tovább">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
             </div>
+        </div>
         </div>
     </section>
 

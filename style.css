@@ -3,6 +3,45 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+/* Remove tap highlight for all interactive elements */
+a,
+button,
+input,
+textarea,
+select,
+.service-tile,
+.hamburger,
+.nav-link,
+.btn,
+.social-link,
+.contact-link,
+.gallery-item,
+.service-modal-close {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow text selection for content areas */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span:not(.hamburger-icon span) {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 body {
@@ -144,10 +183,18 @@ body {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     transition: all 0.3s ease;
+    border: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 .hamburger:hover {
     background: rgba(255, 255, 255, 0.1);
+}
+
+.hamburger:focus {
+    outline: none;
 }
 
 .bar {
@@ -400,7 +447,7 @@ body {
     width: 100%;
     height: 500px;
     object-fit: cover;
-    border-radius: 0;
+    border-radius: 20px;
 }
 
 .about-content {
@@ -455,10 +502,10 @@ body {
 
 /* Services Section */
 .services {
-    padding: 80px 0;
+    padding: 100px 0;
     position: relative;
-    background: linear-gradient(to bottom, #1f1914 50%, #ffffff 50%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    color: #1f1914;
 }
 
 .services-container {
@@ -476,7 +523,7 @@ body {
 }
 
 .services-label {
-    color: #ccc;
+    color: #888;
     font-size: 0.9rem;
     font-weight: 500;
     letter-spacing: 2px;
@@ -493,13 +540,13 @@ body {
     transform: translateY(-50%);
     width: 30px;
     height: 1px;
-    background-color: #ccc;
+    background-color: #888;
 }
 
 .services-title {
     font-size: 2.8rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #1f1914;
     line-height: 1.2;
     margin-bottom: 1.5rem;
     max-width: 800px;
@@ -507,7 +554,7 @@ body {
 
 .services-description {
     font-size: 1rem;
-    color: #ccc;
+    color: #555;
     line-height: 1.6;
     margin-bottom: 2rem;
     max-width: 600px;
@@ -522,42 +569,38 @@ body {
 }
 
 .service-tile {
-    background-color: #ffffff;
-    border-radius: 12px;
+    background-color: #1f1914;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
-}
-
-.service-tile::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 3px solid transparent;
-    border-radius: 12px;
-    transition: border-color 0.3s ease;
-    pointer-events: none;
-}
-
-.service-tile:hover::after {
-    border-color: #1f1914;
+    scroll-margin-top: 100px;
 }
 
 .service-tile:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
 }
 
 .service-tile-image {
     width: 100%;
-    height: 220px;
+    height: 400px;
     overflow: hidden;
     position: relative;
+}
+
+.service-tile-image::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(31, 25, 20, 0.6) 100%);
+    z-index: 1;
+    transition: opacity 0.3s ease;
 }
 
 .service-tile-image::after {
@@ -565,50 +608,87 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, transparent 50%, rgba(31, 25, 20, 0.7));
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 20%, rgba(31, 25, 20, 0.3) 100%);
+    z-index: 0;
+    pointer-events: none;
 }
 
-.service-tile:hover .service-tile-image::after {
-    opacity: 1;
+.service-tile:hover .service-tile-image::before {
+    background: linear-gradient(to bottom, transparent 0%, rgba(31, 25, 20, 0.75) 100%);
 }
 
 .service-tile-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .service-tile:hover .service-tile-image img {
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
 .service-tile-content {
-    padding: 1.5rem;
-    background-color: #ffffff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 130px;
+    padding: 1.5rem 1.8rem;
+    background: rgba(31, 25, 20, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+}
+
+.service-tile:hover .service-tile-content {
+    background: rgba(31, 25, 20, 0.5);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 }
 
 .service-tile-content h3 {
-    font-size: 1.3rem;
-    color: #1f1914;
-    margin-bottom: 0.75rem;
-    font-weight: 600;
-    transition: color 0.3s ease;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(31, 25, 20, 0.6), 0 1px 3px rgba(31, 25, 20, 0.8);
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .service-tile:hover .service-tile-content h3 {
-    color: #2a2018;
+    transform: translateY(-2px);
+    text-shadow: 0 3px 15px rgba(31, 25, 20, 0.7), 0 2px 5px rgba(31, 25, 20, 0.9);
 }
 
 .service-tile-content p {
-    font-size: 0.95rem;
-    color: #666;
-    line-height: 1.6;
+    font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+    color: rgba(255, 255, 255, 0.98);
+    line-height: 1.5;
     margin: 0;
+    text-shadow: 0 2px 6px rgba(31, 25, 20, 0.6), 0 1px 2px rgba(31, 25, 20, 0.8);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 /* Responsive adjustments for services grid */
@@ -619,7 +699,22 @@ body {
     }
     
     .service-tile-image {
-        height: 180px;
+        height: 340px;
+    }
+
+    .service-tile-content {
+        height: 120px;
+        padding: 1.2rem 1.5rem;
+    }
+
+    .service-tile-content h3 {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        margin-bottom: 0.4rem;
+    }
+
+    .service-tile-content p {
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        line-height: 1.4;
     }
 }
 
@@ -717,6 +812,7 @@ body {
 
 .service-modal-body {
     padding: 3rem;
+    padding-bottom: 4rem;
     overflow-y: auto;
     max-height: 85vh;
 }
@@ -785,6 +881,8 @@ body {
 .service-modal-actions {
     display: flex;
     gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
 }
 
 .service-modal-actions .btn {
@@ -794,22 +892,30 @@ body {
 /* Responsive Modal */
 @media (max-width: 768px) {
     .service-modal-content {
-        width: 95%;
-        max-height: 90vh;
-        margin: 5vh auto;
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        margin: 0;
+        border-radius: 0;
     }
 
     .service-modal-inner {
         grid-template-columns: 1fr;
+        max-height: 100vh;
     }
 
     .service-modal-image {
-        height: 250px;
+        height: 40vh;
+        max-height: 40vh;
     }
 
     .service-modal-body {
         padding: 2rem 1.5rem;
-        max-height: calc(90vh - 250px);
+        padding-bottom: 5rem;
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .service-modal-body h2 {
@@ -818,6 +924,7 @@ body {
 
     .service-modal-features {
         padding: 1.5rem;
+        margin-bottom: 1.5rem;
     }
 
     .service-modal-close {
@@ -826,6 +933,11 @@ body {
         width: 40px;
         height: 40px;
         font-size: 1.1rem;
+    }
+
+    .service-modal-actions {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
     }
 }
 
@@ -940,6 +1052,7 @@ body {
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 20px;
 }
 
 .gallery-item.large {
@@ -952,6 +1065,7 @@ body {
     max-height: 260px;
     object-fit: cover;
     transition: transform 0.3s ease;
+    border-radius: 20px;
 }
 
 .gallery-item:hover {
@@ -1023,17 +1137,26 @@ body {
 
 .gallery-modal-close {
     position: absolute;
-    top: -40px;
-    right: 0;
+    top: 20px;
+    right: 20px;
     color: white;
     font-size: 35px;
     font-weight: bold;
     cursor: pointer;
     z-index: 10001;
+    background: rgba(0, 0, 0, 0.5);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .gallery-modal-close:hover {
-    opacity: 0.7;
+    background: rgba(0, 0, 0, 0.8);
+    transform: rotate(90deg);
 }
 
 .gallery-nav {
@@ -1092,129 +1215,96 @@ body {
 /* Contact Section */
 .contact {
     padding: 100px 0;
-    background-color: #ffffff;
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
 }
 
 .contact-content {
+    max-width: 900px;
+    margin: 4rem auto 0;
+}
+
+.contact-info-wrapper {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
-    margin-top: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3rem 2rem;
 }
 
-.contact-column {
+.contact-info-item {
     display: flex;
-}
-
-.contact-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
-    border-radius: 25px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    width: 100%;
-    border: 1px solid #f0f0f0;
-}
-
-.contact-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
-}
-
-.contact-card-header {
-    background: linear-gradient(135deg, #1f1914 0%, #2a2018 100%);
-    color: #ffffff;
-    padding: 2rem 2.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.contact-card-header i {
-    font-size: 1.8rem;
-    opacity: 0.9;
-}
-
-.contact-card-header h3 {
-    font-size: 1.6rem;
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.contact-card-body {
-    padding: 2.5rem;
-    display: flex;
-    flex-direction: column;
     gap: 1.5rem;
-}
-
-.contact-item {
-    display: flex;
     align-items: flex-start;
-    gap: 1.2rem;
-    padding: 1.2rem;
-    background-color: #ffffff;
-    border-radius: 15px;
-    transition: all 0.3s ease;
-    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease;
 }
 
-.contact-item:hover {
-    background-color: #f8f8f8;
+.contact-info-item:hover {
     transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
-.contact-item > i {
-    width: 24px;
-    height: 24px;
-    color: #1f1914;
-    font-size: 1.2rem;
+.contact-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #1f1914 0%, #2a2018 100%);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #ffffff;
+    font-size: 1.5rem;
     flex-shrink: 0;
-    margin-top: 2px;
+    box-shadow: 0 4px 15px rgba(31, 25, 20, 0.15);
+    transition: all 0.3s ease;
 }
 
-.contact-item-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
+.contact-info-item:hover .contact-icon {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(31, 25, 20, 0.25);
+}
+
+.contact-details {
     flex: 1;
 }
 
-.contact-label {
+.contact-details h4 {
     font-size: 0.85rem;
     color: #888;
-    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
-.contact-item-content span:not(.contact-label),
-.contact-link {
+.contact-value {
+    font-size: 1.1rem;
     color: #1f1914;
     font-weight: 500;
-    font-size: 1.05rem;
+    line-height: 1.6;
     text-decoration: none;
     transition: color 0.3s ease;
-    line-height: 1.5;
 }
 
-.contact-link {
-    color: #1f1914;
-}
-
-.contact-link:hover {
+a.contact-value:hover {
     color: #555;
 }
 
-.contact-card-footer {
-    padding: 1.5rem 2.5rem;
-    background-color: #f8f8f8;
+.contact-value:not(a) {
+    display: block;
+}
+
+.contact-social {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding-top: 2rem;
     border-top: 1px solid #e8e8e8;
+    margin-top: 1rem;
+}
+
+.contact-social h4 {
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
 }
 
 .social-links {
@@ -1313,6 +1403,22 @@ body {
 .footer-section p {
     color: #e0e0e0;
     line-height: 1.6;
+}
+
+.footer-company-info {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-company-info p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.footer-company-info small {
+    color: #ccc;
+    font-size: 0.85rem;
 }
 
 .footer-section ul {
@@ -1556,60 +1662,28 @@ body {
         border-radius: 20px;
     }
 
-    .contact-content {
+    .contact-info-wrapper {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 2.5rem 0;
     }
 
-    .contact-card {
-        margin-bottom: 1rem;
+    .contact-icon {
+        width: 55px;
+        height: 55px;
+        font-size: 1.3rem;
     }
 
-    .contact-card-header {
-        padding: 1.5rem 2rem;
-        flex-direction: row;
-        text-align: left;
-    }
-
-    .contact-card-header h3 {
-        font-size: 1.4rem;
-    }
-
-    .contact-card-body {
-        padding: 2rem;
-    }
-
-    .contact-item {
-        padding: 1rem;
-        flex-direction: row;
-        align-items: flex-start;
-    }
-
-    .contact-item > i {
-        font-size: 1.1rem;
-    }
-
-    .contact-item-content {
-        flex: 1;
-    }
-
-    .contact-label {
+    .contact-details h4 {
         font-size: 0.8rem;
     }
 
-    .contact-item-content span:not(.contact-label),
-    .contact-link {
-        font-size: 0.95rem;
+    .contact-value {
+        font-size: 1rem;
     }
 
-    .social-links {
-        justify-content: center;
-    }
-
-    .social-link {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1rem;
+    .contact-social {
+        margin-top: 0.5rem;
+        padding-top: 1.5rem;
     }
 
     .services-header {
@@ -1680,6 +1754,14 @@ body {
         margin: 2.5% auto;
     }
 
+    .gallery-modal-close {
+        top: 25px;
+        right: 25px;
+        width: 45px;
+        height: 45px;
+        font-size: 30px;
+    }
+
     #galleryModalImage {
         max-height: 60%;
     }
@@ -1732,6 +1814,12 @@ body {
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+}
+
+/* Scroll margin for sections to account for fixed navbar */
+section[id] {
+    scroll-margin-top: 80px;
 }
 
 /* Loading animations */

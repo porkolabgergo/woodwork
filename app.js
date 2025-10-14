@@ -855,6 +855,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     featuresList.appendChild(li);
                 });
 
+                // Reset scroll position to top
+                const modalBody = modal.querySelector('.service-modal-body');
+                if (modalBody) {
+                    modalBody.scrollTop = 0;
+                }
+
                 // Show modal with animation
                 modal.style.display = 'block';
                 document.body.style.overflow = 'hidden';
@@ -872,6 +878,11 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             modal.style.display = 'none';
             document.body.style.overflow = '';
+            // Reset scroll position when closing
+            const modalBody = modal.querySelector('.service-modal-body');
+            if (modalBody) {
+                modalBody.scrollTop = 0;
+            }
         }, 300);
     }
 

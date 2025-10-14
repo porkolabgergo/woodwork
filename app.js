@@ -4,8 +4,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
 
+    if (!hamburger || !navMenu) {
+        console.error('Mobile menu elements not found');
+        return;
+    }
+
     // Toggle mobile menu
-    hamburger.addEventListener('click', function() {
+    hamburger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Hamburger clicked');
         hamburger.classList.toggle('active');
         navMenu.classList.toggle('active');
     });
@@ -36,15 +44,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    });
 });
 
-// Cookie consent handling (Shadow DOM-based to avoid page-level CSS interference)
+// Cookie consent handling
 (function() {
     const CONSENT_KEY = 'balancedesign_cookie_consent_v1';
+    let consentPanelCreated = false; // Flag to prevent duplicate creation
 
     function hasConsent() {
         try {
-            return localStorage.getItem(CONSENT_KEY) === 'accepted';
+            const consent = localStorage.getItem(CONSENT_KEY);
+            return consent === 'accepted' || consent === 'declined';
         } catch (e) {
             return false;
         }
@@ -53,91 +71,241 @@ document.addEventListener('DOMContentLoaded', function() {
     function setConsent(value) {
         try {
             localStorage.setItem(CONSENT_KEY, value);
+            console.log('Cookie consent set to:', value);
         } catch (e) {
-            // ignore storage errors
+            console.error('Cookie consent storage error:', e);
         }
     }
 
-    // Build a Shadow DOM cookie panel and attach it to document.body
-    function createShadowConsent() {
-        // Container host
-        const host = document.createElement('div');
-        host.id = 'cookie-consent-host';
-        // Keep off-screen until ready
-        host.style.all = 'initial';
-
-        // Attach shadow root (closed to prevent accidental page scripts from tampering)
-        const shadow = host.attachShadow({ mode: 'closed' });
-
-        // Build inner HTML + styles
-        const style = document.createElement('style');
-        style.textContent = `
-            :host{all:initial}
-            .cookie-consent{position:fixed;left:20px;right:20px;bottom:24px;background:rgba(31,25,20,0.96);color:#fff;padding:18px 20px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:2147483647;display:flex;justify-content:center;align-items:center;font-family:Inter, system-ui, Arial, sans-serif}
-            .cookie-consent-inner{max-width:1100px;width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px}
-            .cookie-consent-text{flex:1 1 auto}
-            .cookie-consent-text p{margin-top:6px;color:#e6e6e6;font-size:0.95rem}
-            .cookie-consent-actions{display:flex;gap:10px;flex-shrink:0}
-            button{cursor:pointer;padding:10px 20px;border-radius:20px;border:2px solid transparent;font-weight:600}
-            .btn-primary{background:#1f1914;color:#fff;border-color:#1f1914}
-            .btn-secondary{background:transparent;color:#fff;border-color:#fff}
-            @media(max-width:640px){.cookie-consent-inner{flex-direction:column;align-items:stretch;text-align:left}.cookie-consent-actions{justify-content:flex-end;margin-top:8px}}
-        `;
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'cookie-consent';
-        wrapper.innerHTML = `
+    function createCookieConsent() {
+        // Prevent duplicate creation
+        if (consentPanelCreated) {
+            console.warn('Cookie consent panel already created, skipping');
+            return;
+        }
+        
+        // Check if panel already exists in DOM
+        const existingPanel = document.querySelector('.cookie-consent');
+        if (existingPanel) {
+            console.warn('Cookie consent panel already exists in DOM, skipping');
+            return;
+        }
+        
+        consentPanelCreated = true;
+        console.log('Creating cookie consent panel');
+        
+        const consentPanel = document.createElement('div');
+        consentPanel.className = 'cookie-consent';
+        consentPanel.id = 'cookieConsentPanel';
+        consentPanel.innerHTML = `
             <div class="cookie-consent-inner">
                 <div class="cookie-consent-text">
                     <strong>Az oldal sütiket használ</strong>
                     <p>Weboldalunk sütiket (cookie-kat) használ a jobb felhasználói élmény és analitika érdekében. Folytatással jóváhagyja a sütik használatát.</p>
                 </div>
                 <div class="cookie-consent-actions">
-                    <button id="shadowCookieDecline" class="btn btn-secondary">Elutasítom</button>
-                    <button id="shadowCookieAccept" class="btn btn-primary">Elfogadom</button>
+                    <button type="button" id="cookieDecline" class="btn btn-secondary">Elutasítom</button>
+                    <button type="button" id="cookieAccept" class="btn btn-primary">Elfogadom</button>
                 </div>
             </div>
         `;
 
-        shadow.appendChild(style);
-        shadow.appendChild(wrapper);
+        document.body.appendChild(consentPanel);
 
-        // Attach host to body
-        document.body.appendChild(host);
+        // Use setTimeout to ensure elements are in DOM
+        setTimeout(() => {
+            const acceptBtn = consentPanel.querySelector('#cookieAccept');
+            const declineBtn = consentPanel.querySelector('#cookieDecline');
 
-        // Attach event listeners inside shadow
-        // Because shadow is closed, we must query via the wrapper reference
-        const accept = wrapper.querySelector('#shadowCookieAccept');
-        const decline = wrapper.querySelector('#shadowCookieDecline');
+            console.log('Cookie buttons:', { acceptBtn, declineBtn });
+            console.log('Panel in DOM?', document.body.contains(consentPanel));
 
-        accept.addEventListener('click', () => {
-            setConsent('accepted');
-            removeShadowConsent(host);
-            showNotification('Köszönjük! A sütik elfogadásra kerültek.', 'success');
-        });
+            function handleAccept(e) {
+                console.log('===== ACCEPT HANDLER FIRED =====');
+                console.log('Event type:', e ? e.type : 'no event');
+                
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                }
+                
+                console.log('Setting consent to accepted...');
+                setConsent('accepted');
+                
+                console.log('Calling removeCookieConsent...');
+                removeCookieConsent(consentPanel);
+                
+                console.log('===== ACCEPT HANDLER COMPLETE =====');
+                return false;
+            }
 
-        decline.addEventListener('click', () => {
-            setConsent('declined');
-            removeShadowConsent(host);
-            showNotification('A sütik elutasítva. A weboldal alapfunkciói továbbra is működnek.', 'info');
-        });
+            function handleDecline(e) {
+                console.log('===== DECLINE HANDLER FIRED =====');
+                console.log('Event type:', e ? e.type : 'no event');
+                
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                }
+                
+                console.log('Setting consent to declined...');
+                setConsent('declined');
+                
+                console.log('Calling removeCookieConsent...');
+                removeCookieConsent(consentPanel);
+                
+                console.log('===== DECLINE HANDLER COMPLETE =====');
+                return false;
+            }
 
-        return host;
+            if (acceptBtn) {
+                console.log('Attaching events to Accept button');
+                // Remove any existing listeners
+                acceptBtn.onclick = null;
+                // Add both click and touch events for mobile
+                acceptBtn.addEventListener('click', handleAccept, { once: true });
+                acceptBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    handleAccept(e);
+                }, { once: true });
+                // Also add ontouchend as backup
+                acceptBtn.ontouchend = function(e) {
+                    e.preventDefault();
+                    handleAccept(e);
+                };
+            } else {
+                console.error('Accept button NOT FOUND');
+            }
+
+            if (declineBtn) {
+                console.log('Attaching events to Decline button');
+                // Remove any existing listeners
+                declineBtn.onclick = null;
+                // Add both click and touch events for mobile
+                declineBtn.addEventListener('click', handleDecline, { once: true });
+                declineBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    handleDecline(e);
+                }, { once: true });
+                // Also add ontouchend as backup
+                declineBtn.ontouchend = function(e) {
+                    e.preventDefault();
+                    handleDecline(e);
+                };
+            } else {
+                console.error('Decline button NOT FOUND');
+            }
+        }, 50);
     }
 
-    function removeShadowConsent(host) {
-        try {
-            if (host && host.parentNode) host.parentNode.removeChild(host);
-        } catch (e) {
-            // ignore
+    function removeCookieConsent(panel) {
+        console.log('======================================');
+        console.log('removeCookieConsent CALLED');
+        console.log('======================================');
+        
+        // Remove ALL cookie consent panels (in case of duplicates)
+        const allPanels = document.querySelectorAll('.cookie-consent');
+        console.log('Found ' + allPanels.length + ' cookie consent panel(s)');
+        
+        allPanels.forEach((p, index) => {
+            console.log('Removing panel #' + (index + 1));
+            
+            // Method 1: Hide immediately with display none
+            p.style.display = 'none';
+            
+            // Method 2: Hide with visibility
+            p.style.visibility = 'hidden';
+            
+            // Method 3: Move off screen
+            p.style.position = 'fixed';
+            p.style.left = '-9999px';
+            
+            // Method 4: Set opacity to 0
+            p.style.opacity = '0';
+            
+            // Disable interaction
+            p.style.pointerEvents = 'none';
+            
+            // Try to remove from DOM
+            try {
+                if (p.parentNode) {
+                    p.parentNode.removeChild(p);
+                    console.log('✓✓✓ Panel #' + (index + 1) + ' REMOVED with removeChild');
+                } else {
+                    p.remove();
+                    console.log('✓✓✓ Panel #' + (index + 1) + ' REMOVED with remove()');
+                }
+            } catch (e) {
+                console.error('✗✗✗ ERROR removing panel #' + (index + 1) + ':', e);
+            }
+        });
+        
+        // Verify removal after a delay
+        setTimeout(() => {
+            const stillThere = document.querySelectorAll('.cookie-consent');
+            console.log('Verification check - Panels still in DOM:', stillThere.length);
+            if (stillThere.length > 0) {
+                console.warn('!!! ' + stillThere.length + ' PANEL(S) STILL EXIST, forcing removal !!!');
+                stillThere.forEach((p, i) => {
+                    p.style.display = 'none';
+                    try {
+                        p.remove();
+                        console.log('Force removed panel #' + (i + 1));
+                    } catch (e) {
+                        console.error('Force removal failed for panel #' + (i + 1) + ':', e);
+                    }
+                });
+            } else {
+                console.log('✓✓✓ VERIFIED: All panels successfully removed');
+            }
+        }, 100);
+        
+        console.log('======================================');
+        console.log('removeCookieConsent COMPLETE');
+        console.log('======================================');
+    }
+
+    // Initialize when DOM is ready - only once!
+    let initialized = false;
+    
+    function initCookieConsent() {
+        if (initialized) {
+            console.log('Cookie consent already initialized, skipping');
+            return;
         }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
+        initialized = true;
+        
         if (!hasConsent()) {
-            createShadowConsent();
+            console.log('No consent found, showing panel after delay');
+            setTimeout(createCookieConsent, 500);
+        } else {
+            console.log('Consent already given, not showing panel');
+            // Remove any existing panels that might be in the DOM
+            setTimeout(() => {
+                const existingPanels = document.querySelectorAll('.cookie-consent');
+                if (existingPanels.length > 0) {
+                    console.warn('Found ' + existingPanels.length + ' existing panel(s) even though consent was given! Removing...');
+                    existingPanels.forEach((panel, i) => {
+                        panel.style.display = 'none';
+                        try {
+                            panel.remove();
+                            console.log('Removed existing panel #' + (i + 1));
+                        } catch (e) {
+                            console.error('Error removing existing panel:', e);
+                        }
+                    });
+                }
+            }, 100);
         }
-    });
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCookieConsent, { once: true });
+    } else {
+        initCookieConsent();
+    }
 })();
 
 // Active navigation highlighting
@@ -177,49 +345,6 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// Contact Form Handling
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = new FormData(this);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const phone = formData.get('phone');
-    const subject = formData.get('subject');
-    const message = formData.get('message');
-    
-    // Basic validation
-    if (!name || !email || !message) {
-        showNotification('Kérjük, töltse ki az összes kötelező mezőt!', 'error');
-        return;
-    }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showNotification('Kérjük, adjon meg egy érvényes e-mail címet!', 'error');
-        return;
-    }
-    
-    // Show loading state
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Küldés...';
-    submitBtn.disabled = true;
-    
-    // Simulate form submission (replace with actual form handling)
-    setTimeout(() => {
-        showNotification('Köszönjük az üzenetét! Hamarosan felvesszük Önnel a kapcsolatot.', 'success');
-        
-        // Reset form
-        this.reset();
-        
-        // Reset button
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }, 2000);
-});
 
 // Notification system
 function showNotification(message, type = 'info') {

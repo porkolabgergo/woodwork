@@ -38,6 +38,108 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Cookie consent handling (Shadow DOM-based to avoid page-level CSS interference)
+(function() {
+    const CONSENT_KEY = 'balancedesign_cookie_consent_v1';
+
+    function hasConsent() {
+        try {
+            return localStorage.getItem(CONSENT_KEY) === 'accepted';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function setConsent(value) {
+        try {
+            localStorage.setItem(CONSENT_KEY, value);
+        } catch (e) {
+            // ignore storage errors
+        }
+    }
+
+    // Build a Shadow DOM cookie panel and attach it to document.body
+    function createShadowConsent() {
+        // Container host
+        const host = document.createElement('div');
+        host.id = 'cookie-consent-host';
+        // Keep off-screen until ready
+        host.style.all = 'initial';
+
+        // Attach shadow root (closed to prevent accidental page scripts from tampering)
+        const shadow = host.attachShadow({ mode: 'closed' });
+
+        // Build inner HTML + styles
+        const style = document.createElement('style');
+        style.textContent = `
+            :host{all:initial}
+            .cookie-consent{position:fixed;left:20px;right:20px;bottom:24px;background:rgba(31,25,20,0.96);color:#fff;padding:18px 20px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:2147483647;display:flex;justify-content:center;align-items:center;font-family:Inter, system-ui, Arial, sans-serif}
+            .cookie-consent-inner{max-width:1100px;width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px}
+            .cookie-consent-text{flex:1 1 auto}
+            .cookie-consent-text p{margin-top:6px;color:#e6e6e6;font-size:0.95rem}
+            .cookie-consent-actions{display:flex;gap:10px;flex-shrink:0}
+            button{cursor:pointer;padding:10px 20px;border-radius:20px;border:2px solid transparent;font-weight:600}
+            .btn-primary{background:#1f1914;color:#fff;border-color:#1f1914}
+            .btn-secondary{background:transparent;color:#fff;border-color:#fff}
+            @media(max-width:640px){.cookie-consent-inner{flex-direction:column;align-items:stretch;text-align:left}.cookie-consent-actions{justify-content:flex-end;margin-top:8px}}
+        `;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'cookie-consent';
+        wrapper.innerHTML = `
+            <div class="cookie-consent-inner">
+                <div class="cookie-consent-text">
+                    <strong>Az oldal sütiket használ</strong>
+                    <p>Weboldalunk sütiket (cookie-kat) használ a jobb felhasználói élmény és analitika érdekében. Folytatással jóváhagyja a sütik használatát.</p>
+                </div>
+                <div class="cookie-consent-actions">
+                    <button id="shadowCookieDecline" class="btn btn-secondary">Elutasítom</button>
+                    <button id="shadowCookieAccept" class="btn btn-primary">Elfogadom</button>
+                </div>
+            </div>
+        `;
+
+        shadow.appendChild(style);
+        shadow.appendChild(wrapper);
+
+        // Attach host to body
+        document.body.appendChild(host);
+
+        // Attach event listeners inside shadow
+        // Because shadow is closed, we must query via the wrapper reference
+        const accept = wrapper.querySelector('#shadowCookieAccept');
+        const decline = wrapper.querySelector('#shadowCookieDecline');
+
+        accept.addEventListener('click', () => {
+            setConsent('accepted');
+            removeShadowConsent(host);
+            showNotification('Köszönjük! A sütik elfogadásra kerültek.', 'success');
+        });
+
+        decline.addEventListener('click', () => {
+            setConsent('declined');
+            removeShadowConsent(host);
+            showNotification('A sütik elutasítva. A weboldal alapfunkciói továbbra is működnek.', 'info');
+        });
+
+        return host;
+    }
+
+    function removeShadowConsent(host) {
+        try {
+            if (host && host.parentNode) host.parentNode.removeChild(host);
+        } catch (e) {
+            // ignore
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!hasConsent()) {
+            createShadowConsent();
+        }
+    });
+})();
+
 // Active navigation highlighting
 window.addEventListener('scroll', function() {
     const sections = document.querySelectorAll('section[id]');

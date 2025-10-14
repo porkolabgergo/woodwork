@@ -44,10 +44,26 @@ body {
     height: 70px;
 }
 
-.nav-logo h2 {
-    color: #ffffff;
-    font-weight: 600;
-    font-size: 1.5rem;
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Logo image / inline SVG sizing */
+.nav-logo img,
+.nav-logo svg {
+    display: block;
+    width: 250px; /* increased desktop default */
+    height: auto;
+    max-height: 120px;
+}
+
+/* Slightly smaller logo when navbar becomes compact (scrolled) */
+.navbar.scrolled .nav-logo img,
+.navbar.scrolled .nav-logo svg {
+    width: 200px;
+    max-height: 96px;
 }
 
 .nav-menu {
@@ -131,6 +147,40 @@ body {
     margin: 3px 0;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     transform-origin: center;
+}
+
+/* Responsive: collapse nav on small screens */
+@media (max-width: 900px) {
+    .nav-menu {
+        display: none; /* hide menu (assumed to be toggled with JS)
+        */
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-cta {
+        display: none;
+    }
+
+    .nav-logo img,
+    .nav-logo svg {
+        width: 140px;
+        max-height: 90px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-logo img,
+    .nav-logo svg {
+        width: 110px;
+        max-height: 64px;
+    }
+
+    .nav-container {
+        height: 72px; /* a bit taller to fit the larger logo */
+    }
 }
 
 /* Hamburger active state (X animation) */
@@ -1306,4 +1356,59 @@ html {
 .fade-in.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Cookie consent panel */
+.cookie-consent {
+    position: fixed;
+    left: 20px;
+    right: 20px;
+    bottom: 24px;
+    background: rgba(31,25,20,0.96);
+    color: #fff;
+    padding: 18px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    z-index: 11000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cookie-consent-inner {
+    max-width: 1100px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.cookie-consent-text {
+    flex: 1 1 auto;
+}
+
+.cookie-consent-text p {
+    margin-top: 6px;
+    color: #e6e6e6;
+    font-size: 0.95rem;
+}
+
+.cookie-consent-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+    .cookie-consent-inner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+    }
+
+    .cookie-consent-actions {
+        justify-content: flex-end;
+        margin-top: 8px;
+    }
 }

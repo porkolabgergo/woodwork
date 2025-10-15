@@ -442,21 +442,89 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentImageIndex = 0;
     let galleryImages = [];
     
-    // Prepare gallery data
+    // Load gallery images dynamically from the folder
+    async function loadGalleryImages() {
+        try {
+            // Try to fetch from PHP endpoint first
+            const response = await fetch('get-gallery-images.php');
+            if (response.ok) {
+                const imagePaths = await response.json();
+                
+                // Load images into galleryImages array
+                imagePaths.forEach((path, index) => {
+                    const filename = path.split('/').pop();
+                    galleryImages.push({
+                        src: path,
+                        alt: `Balance Design projekt ${index + 1}`,
+                        title: `Referencia munka ${index + 1}`,
+                        description: 'Egyedi faipari és belsőépítészeti megoldás - Balance Design Kft.'
+                    });
+                });
+            } else {
+                throw new Error('PHP endpoint not available');
+            }
+        } catch (error) {
+            console.log('Using fallback gallery images');
+            // Fallback: Use static list if PHP is not available
+            const fallbackImages = [
+                'assets/gallery/IMG_0208.png',
+                'assets/gallery/IMG_0570.png',
+                'assets/gallery/IMG_0594.png',
+                'assets/gallery/IMG_0804.png',
+                'assets/gallery/IMG_0813.png',
+                'assets/gallery/IMG_1139.png',
+                'assets/gallery/IMG_1148.png',
+                'assets/gallery/IMG_2127.png',
+                'assets/gallery/IMG_2130.png',
+                'assets/gallery/IMG_2159.png',
+                'assets/gallery/IMG_2265.png',
+                'assets/gallery/IMG_2274.png',
+                'assets/gallery/IMG_2348.png',
+                'assets/gallery/IMG_2591.png',
+                'assets/gallery/IMG_2792.png',
+                'assets/gallery/IMG_4124.png',
+                'assets/gallery/IMG_4149.png',
+                'assets/gallery/IMG_5461.png',
+                'assets/gallery/IMG_5463.png',
+                'assets/gallery/IMG_5564.png',
+                'assets/gallery/IMG_5567.png',
+                'assets/gallery/IMG_7328.png',
+                'assets/gallery/IMG_7457.png',
+                'assets/gallery/IMG_7479.png',
+                'assets/gallery/IMG_7481.png',
+                'assets/gallery/IMG_7738.png',
+                'assets/gallery/IMG_8065.png',
+                'assets/gallery/IMG_8069.png',
+                'assets/gallery/IMG_8350.png',
+                'assets/gallery/IMG_8351.png',
+                'assets/gallery/IMG_9742.png',
+                'assets/gallery/IMG_9745.png'
+            ];
+            
+            fallbackImages.forEach((path, index) => {
+                galleryImages.push({
+                    src: path,
+                    alt: `Balance Design projekt ${index + 1}`,
+                    title: `Referencia munka ${index + 1}`,
+                    description: 'Egyedi faipari és belsőépítészeti megoldás - Balance Design Kft.'
+                });
+            });
+        }
+    }
+    
+    // Initialize gallery
+    loadGalleryImages().then(() => {
+        console.log(`Loaded ${galleryImages.length} gallery images`);
+    });
+    
+    // Prepare gallery data from visible preview items
     galleryItems.forEach((item, index) => {
-        const img = item.querySelector('img');
-        const caption = item.querySelector('.gallery-caption');
-        
-        galleryImages.push({
-            src: item.getAttribute('data-src') || img.getAttribute('src'),
-            alt: img.getAttribute('alt'),
-            title: img.getAttribute('alt'),
-            description: caption ? caption.textContent : 'Egyedi faipari megoldás'
-        });
-        
         // Add click event to gallery items
         item.addEventListener('click', function() {
-            currentImageIndex = index;
+            // Find the clicked image in the full gallery
+            const clickedSrc = item.getAttribute('data-src');
+            const fullGalleryIndex = galleryImages.findIndex(img => img.src === clickedSrc);
+            currentImageIndex = fullGalleryIndex >= 0 ? fullGalleryIndex : 0;
             openGalleryModal();
         });
     });
@@ -487,6 +555,12 @@ document.addEventListener('DOMContentLoaded', function() {
         galleryModalImage.alt = currentImage.alt;
         galleryModalTitle.textContent = currentImage.title;
         galleryModalDescription.textContent = currentImage.description;
+        
+        // Update counter
+        const counter = document.getElementById('galleryCounter');
+        if (counter) {
+            counter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+        }
     }
     
     function showNextImage() {
@@ -721,7 +795,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Beépített spotlámpák és LED világítás',
                 'Munkalap tervezés és beépítés',
                 'Gépek beépítése (sütő, hűtő, mosogatógép)',
-                'Teljes körű garancia'
             ]
         },
         wardrobe: {
@@ -753,7 +826,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Mosdó alatti szekrények',
                 'Tükrös fürdőszoba szekrények',
                 'Beépített vagy szabadon álló megoldások',
-                'Rejtett világítás',
                 'Modern, könnyen tisztítható felületek',
                 'Egyedi méretezés és tervezés'
             ]
@@ -783,18 +855,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Csapatunk magában foglalja a tervezőket, asztalosokat, villanyszerelőket és egyéb szakembereket, így minden munkát egy kézből kaphat.</p>
             `,
             features: [
-                'Komplett lakásfelújítás és átalakítás',
-                'Falak áthelyezése, új elrendezések',
                 'Gipszkarton munkák',
-                'Villanyszerelés és világítástervezés',
-                'Festés, tapétázás',
                 'Parketta és burkolat lerakás',
-                'Projektmenedzsment egy kézből'
             ]
         },
         '3d': {
             title: '3D látványterv kivitelezés',
-            image: 'assets/unsorted/IMG_5730.jpg',
+            image: 'assets/3dplan.jpg',
             description: `
                 <p>Fotorealisztikus 3D látványterveket készítünk, amelyek segítségével még a kivitelezés előtt láthatja, milyen lesz otthona vagy irodája. A terveinket a legmodernebb szoftverekkel készítjük.</p>
                 <p>A 3D tervek segítenek a döntéshozatalban: megtekintheti a különböző színeket, anyagokat, elrendezéseket, mielőtt még bármit is elkezdene.</p>
@@ -802,10 +869,8 @@ document.addEventListener('DOMContentLoaded', function() {
             features: [
                 'Fotorealisztikus 3D vizualizáció',
                 'Teljes helyiségek megtervezése',
-                'Különböző variációk bemutatása',
-                'Anyagok, színek, világítás kipróbálása',
+                'Anyagok, színek, kipróbálása',
                 'Bútorrajzok és alaprajzok',
-                'Virtual reality (VR) bemutató lehetőség',
                 'A kivitelezés pontos előkészítése'
             ]
         },
@@ -832,6 +897,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalOverlay = modal.querySelector('.service-modal-overlay');
     const modalClose = modal.querySelector('.service-modal-close');
     const serviceTiles = document.querySelectorAll('.service-tile');
+    const morphWrapper = document.querySelector('.morph-wrapper');
+    let morphInterval = null;
+
+    // Auto morph function
+    function startAutoMorph() {
+        if (morphWrapper && !morphInterval) {
+            // Initial delay before first morph
+            setTimeout(() => {
+                morphWrapper.classList.add('morphing');
+            }, 800);
+
+            // Set up interval for continuous morphing
+            morphInterval = setInterval(() => {
+                morphWrapper.classList.toggle('morphing');
+            }, 3500);
+        }
+    }
+
+    function stopAutoMorph() {
+        if (morphInterval) {
+            clearInterval(morphInterval);
+            morphInterval = null;
+        }
+        if (morphWrapper) {
+            morphWrapper.classList.remove('morphing');
+        }
+    }
 
     // Open modal
     serviceTiles.forEach(tile => {
@@ -840,6 +932,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const service = serviceData[serviceId];
 
             if (service) {
+                // Check if this is the 3D service
+                const is3DService = serviceId === '3d';
+                
+                // Toggle modal layout class
+                if (is3DService) {
+                    modal.classList.add('modal-3d');
+                } else {
+                    modal.classList.remove('modal-3d');
+                }
+
                 // Populate modal content
                 document.getElementById('serviceModalTitle').textContent = service.title;
                 document.getElementById('serviceModalImg').src = service.image;
@@ -867,6 +969,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 setTimeout(() => {
                     modal.classList.add('show');
+                    
+                    // Start auto morph for 3D service
+                    if (is3DService) {
+                        startAutoMorph();
+                    }
                 }, 10);
             }
         });
@@ -874,10 +981,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close modal function
     function closeModal() {
+        // Stop morphing animation
+        stopAutoMorph();
+        
         modal.classList.remove('show');
         setTimeout(() => {
             modal.style.display = 'none';
             document.body.style.overflow = '';
+            modal.classList.remove('modal-3d');
+            
             // Reset scroll position when closing
             const modalBody = modal.querySelector('.service-modal-body');
             if (modalBody) {

@@ -136,7 +136,7 @@
                 </div>
                 <div id="service-doors" class="service-tile" data-service="doors">
                     <div class="service-tile-image">
-                        <img src="assets/unsorted/IMG_0809.jpg" alt="Beltéri ajtók" />
+                        <img src="assets/services_doors.jpg" alt="Beltéri ajtók" />
                     </div>
                     <div class="service-tile-content">
                         <h3>Beltéri Ajtók</h3>
@@ -154,7 +154,7 @@
                 </div>
                 <div id="service-3d" class="service-tile" data-service="3d">
                     <div class="service-tile-image">
-                        <img src="assets/unsorted/IMG_5730.jpg" alt="3D látványterv" />
+                        <img src="assets/3dplan.jpg" alt="3D látványterv" />
                     </div>
                     <div class="service-tile-content">
                         <h3>3D Látványterv</h3>
@@ -183,6 +183,13 @@
                 <div class="service-modal-inner">
                     <div class="service-modal-image">
                         <img id="serviceModalImg" src="" alt="" />
+                    </div>
+                    <!-- Morph container for 3D service (hidden by default) -->
+                    <div class="service-modal-morph" id="serviceModalMorph" style="display: none;">
+                        <div class="morph-wrapper">
+                            <img src="assets/morph/gallery_2 1.png" alt="3D Visualization 1" class="morph-image morph-img-1" />
+                            <img src="assets/morph/3dplan 1.png" alt="3D Visualization 2" class="morph-image morph-img-2" />
+                        </div>
                     </div>
                     <div class="service-modal-body">
                         <h2 id="serviceModalTitle"></h2>
@@ -219,14 +226,14 @@
             </div>
             <div class="gallery-images">
                 <div class="gallery-grid">
-                    <div class="gallery-item large" data-src="assets/gallery_1.jpg">
-                        <img src="assets/gallery_1.jpg" alt="Modern szürke konyha" />
+                    <div class="gallery-item large" data-src="assets/gallery/IMG_2127.png">
+                        <img src="assets/gallery/IMG_2127.png" alt="Modern konyha egyedi megoldással" />
                     </div>
-                    <div class="gallery-item" data-src="assets/gallery_2.jpg">
-                        <img src="assets/gallery_2.jpg" alt="Modern fekete konyha" />
+                    <div class="gallery-item" data-src="assets/gallery/IMG_0804.png">
+                        <img src="assets/gallery/IMG_0804.png" alt="Előszoba beépített bútor" />
                     </div>
-                    <div class="gallery-item" data-src="assets/gallery_3.jpg">
-                        <img src="assets/gallery_3.jpg" alt="Modern kék konyha" />
+                    <div class="gallery-item" data-src="assets/gallery/IMG_7328.png">
+                        <img src="assets/gallery/IMG_7328.png" alt="Mikrocement alkalmazás" />
                     </div>
                 </div>
             </div>
@@ -235,9 +242,14 @@
         <!-- Gallery Modal -->
         <div id="galleryModal" class="gallery-modal">
             <div class="gallery-modal-content">
+                <div class="gallery-modal-counter" id="galleryCounter">1 / 1</div>
                 <span class="gallery-modal-close">&times;</span>
-                <button class="gallery-nav prev" id="galleryPrev">&#10094;</button>
-                <button class="gallery-nav next" id="galleryNext">&#10095;</button>
+                <button class="gallery-nav prev" id="galleryPrev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="gallery-nav next" id="galleryNext">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
                 <img id="galleryModalImage" src="" alt="">
                 <div class="gallery-modal-info">
                     <h3 id="galleryModalTitle"></h3>

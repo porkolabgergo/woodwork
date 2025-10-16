@@ -834,6 +834,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "Előszoba szekrények cipőtartóval",
         "LED világítás és szenzoros kapcsolók",
         "Minőségi vasalatok és sínek",
+        "Egyedi méretezés és tervezés",
       ],
     },
     bathroom: {
